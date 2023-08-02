@@ -11,8 +11,7 @@ setup(
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     packages=find_packages(
-        where='src',
-        exclude=['tests']
+        where='.',
     ),
     entry_points={
         'console_scripts': [

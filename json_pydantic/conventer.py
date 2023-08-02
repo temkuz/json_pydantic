@@ -5,8 +5,8 @@ from .functions import get_type, load_json, save_models
 
 def parse_types(data: dict) -> dict[str, ...]:
     result = {}
-    # if not isinstance(data, dict):
-    #     return get_type(data)
+    if not isinstance(data, dict):
+        return get_type(data)
     for key, value in data.items():
         if isinstance(value, dict):
             result[key] = parse_types(value)
@@ -15,6 +15,7 @@ def parse_types(data: dict) -> dict[str, ...]:
         else:
             result[key] = get_type(value)
     return result
+
 
 
 def parse_classes(data: dict[str, ...] | list, name: str = 'Root') -> ClassStruct:
@@ -36,11 +37,7 @@ def parse_classes(data: dict[str, ...] | list, name: str = 'Root') -> ClassStruc
             else:
                 class_struct['args'][key] = 'dict'
         elif isinstance(value, list):
-            if len(value):
-                class_struct['inner_classes'].append(parse_classes(value[0], class_name))
-                class_struct['args'][key] = f'list[{class_name}]'
-            else:
-                class_struct['args'][key] = 'list'
+            parse_list(value, class_struct, class_name)
         else:
             class_struct['args'][key] = value
     return class_struct
