@@ -17,7 +17,6 @@ def parse_types(data: dict) -> dict[str, ...]:
     return result
 
 
-
 def parse_classes(data: dict[str, ...] | list, name: str = 'Root') -> ClassStruct:
     class_struct: ClassStruct = {
         'name': name,
@@ -37,7 +36,11 @@ def parse_classes(data: dict[str, ...] | list, name: str = 'Root') -> ClassStruc
             else:
                 class_struct['args'][key] = 'dict'
         elif isinstance(value, list):
-            parse_list(value, class_struct, class_name)
+            if len(value):
+                class_struct['inner_classes'].append(parse_classes(value[0], class_name))
+                class_struct['args'][key] = class_name
+            else:
+                class_struct['args'][key] = 'list'
         else:
             class_struct['args'][key] = value
     return class_struct
