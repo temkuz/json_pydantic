@@ -60,7 +60,7 @@ def _generate_models(class_struct: ClassStruct) -> str:
 
 
 def generate_models(class_struct: ClassStruct):
-    return 'from pydantic import BaseModel\n\n' + _generate_models(class_struct)
+    return 'from pydantic import BaseModel\n\n\n' + _generate_models(class_struct)
 
 
 def run(input_file: str, output_file: str, first_class_name: str):
