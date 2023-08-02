@@ -5,6 +5,11 @@ from .functions import get_type, load_json, save_models
 
 def parse_types(data: dict) -> dict[str, ...]:
     result = {}
+
+    if isinstance(data, list) and len(data):
+        result['content_list'] = [parse_types(data[0])]
+        return result
+
     if not isinstance(data, dict):
         return get_type(data)
     for key, value in data.items():
