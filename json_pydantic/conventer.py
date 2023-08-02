@@ -38,7 +38,7 @@ def parse_classes(data: dict[str, ...] | list, name: str = 'Root') -> ClassStruc
         elif isinstance(value, list):
             if len(value):
                 class_struct['inner_classes'].append(parse_classes(value[0], class_name))
-                class_struct['args'][key] = class_name
+                class_struct['args'][key] = f'list[{class_name}]'
             else:
                 class_struct['args'][key] = 'list'
         else:
