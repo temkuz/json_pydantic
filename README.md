@@ -6,7 +6,7 @@ Json_Pydantic is a utility for converting json files to Pydantic models
 ## Install
 
 ```commandline
-pip install .
+pip install json-pydantic
 ```
 
 ## Usage
