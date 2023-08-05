@@ -3,11 +3,19 @@
   "registration_at": "01/01/2001",
   "rating": 123456789,
   "post": [
-    {"post_id": 0, "title": "Clickbait", "post_rating": 123123},
-    {"post_id": 1, "title": "Hello World", "post_rating": 456456}
+    {
+      "post_id": 0,
+      "title": "Clickbait",
+      "post_rating": 123123
+    },
+    {
+      "post_id": 1,
+      "title": "Hello World",
+      "post_rating": 456456
+    }
   ],
   "empty_list": [],
-  "filled_struct":{
+  "filled_struct": {
     "code": 200,
     "message": "Ok"
   },
