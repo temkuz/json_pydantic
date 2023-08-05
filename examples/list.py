@@ -2,11 +2,10 @@ from pydantic import BaseModel
 
 
 class ContentList(BaseModel):
-	id: int
-	text: str
-
+    id: int
+    text: str
+    
 
 class Root(BaseModel):
-	content_list: list[ContentList]
-
-
+    content_list: list[ContentList]
+    

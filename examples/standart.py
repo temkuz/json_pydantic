@@ -1,16 +1,22 @@
 from pydantic import BaseModel
 
 
-class Post(BaseModel):
-	post_id: int
-	post_rating: int
-	title: str
+class FilledStruct(BaseModel):
+    code: int
+    message: str
+    
 
+class Post(BaseModel):
+    post_id: int
+    title: str
+    post_rating: int
+    
 
 class Root(BaseModel):
-	name: str
-	post: list[Post]
-	rating: int
-	registration_at: str
-
-
+    name: str
+    registration_at: str
+    rating: int
+    post: list[Post]
+    filled_struct: FilledStruct
+    empty_struct: dict
+    

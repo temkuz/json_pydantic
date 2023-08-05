@@ -1,6 +1,8 @@
+from jinja2 import Environment, FileSystemLoader
+
 from .classes import ClassStruct
-from .variables import CLASS_TEMPLATE
 from .functions import get_type, load_json, save_models
+from .variables import models_template_name, templates_path
 
 
 def parse_types(data: dict) -> dict[str, ...]:
@@ -22,50 +24,41 @@ def parse_types(data: dict) -> dict[str, ...]:
     return result
 
 
-def parse_classes(data: dict[str, ...] | list, name: str = 'Root') -> ClassStruct:
-    class_struct: ClassStruct = {
-        'name': name,
-        'args': {},
-        'inner_classes': []
-    }
+def parse_classes(data: dict[str, ...] | list, name: str = 'Root') -> list[ClassStruct]:
+    result_classes: list[ClassStruct] = []
 
+    buffer: ClassStruct = {'name': name, 'args': {}}
     if not isinstance(data, dict):
         return get_type(data)
 
     for key, value in data.items():
         class_name = key.title().replace('_', '')
         if isinstance(value, dict):
-            if len(value):
-                class_struct['inner_classes'].append(parse_classes(value, class_name))
-                class_struct['args'][key] = class_name
+            if value:
+                new_classes = parse_classes(value, class_name)
+                result_classes = new_classes + result_classes
+                buffer['args'][key] = class_name
             else:
-                class_struct['args'][key] = 'dict'
+                buffer['args'][key] = 'dict'
         elif isinstance(value, list):
-            if len(value):
-                class_struct['inner_classes'].append(parse_classes(value[0], class_name))
-                class_struct['args'][key] = f'list[{class_name}]'
-            else:
-                class_struct['args'][key] = 'list'
+            if value:
+                if value:
+                    new_classes = parse_classes(value[0], class_name)
+                    result_classes = new_classes + result_classes
+                    buffer['args'][key] = f'list[{class_name}]'
+                else:
+                    buffer['args'][key] = 'list'
         else:
-            class_struct['args'][key] = value
-    return class_struct
+            buffer['args'][key] = value
+    result_classes.append(buffer)
+
+    return result_classes
 
 
-def _generate_models(class_struct: ClassStruct) -> str:
-    inner = class_struct['inner_classes']
-    result_string = ''
-    if inner:
-        for class_ in inner:
-            result_string += _generate_models(class_)
-    name = class_struct['name']
-    args = class_struct['args']
-    args = '\n\t'.join(f'{k}: {v}' for k, v in sorted(args.items()))
-    result_string += CLASS_TEMPLATE.format(name=name, args=args)
-    return result_string
-
-
-def generate_models(class_struct: ClassStruct):
-    return 'from pydantic import BaseModel\n\n\n' + _generate_models(class_struct)
+def generate_models(classes: list[ClassStruct]):
+    environment = Environment(loader=FileSystemLoader(templates_path))
+    models_template = environment.get_template(models_template_name)
+    return models_template.render(classes=classes)
 
 
 def run(input_file: str, output_file: str, first_class_name: str):
