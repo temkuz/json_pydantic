@@ -1,0 +1,8 @@
+from pydantic import BaseModel
+
+{% for class in classes %}
+class {{ class.name }}(BaseModel):
+    {% for key, value in class.args.items() -%}
+    {{ key }}: {{ value }}
+    {% endfor %}
+{% endfor %}

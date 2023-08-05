@@ -1,1 +1,4 @@
-CLASS_TEMPLATE = 'class {name}(BaseModel):\n\t{args}\n\n\n'
+from pathlib import Path
+
+templates_path = Path('json_pydantic/templates')
+models_template_name = 'models.py.j2'
